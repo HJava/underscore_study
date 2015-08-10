@@ -11,17 +11,20 @@
     // Establish the root object, `window` (`self`) in the browser, `global`
     // on the server, or `this` in some virtual machines. We use `self`
     // instead of `window` for `WebWorker` support.
+    //建立root对象，即在浏览器中的windows，服务端的global，或者是在虚拟机上的this，我们使用self来代替window对webworker的支持
     var root = typeof self === 'object' && self.self === self && self ||
         typeof global === 'object' && global.global === global && global ||
         this;
 
     // Save the previous value of the `_` variable.
+    //保存_变量的前一个值，防止覆盖
     var previousUnderscore = root._;
 
     // Save bytes in the minified (but not gzipped) version:
     var ArrayProto = Array.prototype, ObjProto = Object.prototype;
 
     // Create quick reference variables for speed access to core prototypes.
+    //给原型连中的某些函数创杰快速索引
     var
         push = ArrayProto.push,
         slice = ArrayProto.slice,
@@ -30,6 +33,7 @@
 
     // All **ECMAScript 5** native function implementations that we hope to use
     // are declared here.
+    //所有ECMAScript5中有的方法都声明在此
     var
         nativeIsArray = Array.isArray,
         nativeKeys = Object.keys,
@@ -39,6 +43,7 @@
     var Ctor = function(){};
 
     // Create a safe reference to the Underscore object for use below.
+    //创建安全索引
     var _ = function(obj) {
         if (obj instanceof _) return obj;
         if (!(this instanceof _)) return new _(obj);
@@ -48,6 +53,7 @@
     // Export the Underscore object for **Node.js**, with
     // backwards-compatibility for their old module API. If we're in
     // the browser, add `_` as a global object.
+    //为Node.js提供导出
     if (typeof exports !== 'undefined') {
         if (typeof module !== 'undefined' && module.exports) {
             exports = module.exports = _;
@@ -63,7 +69,9 @@
     // Internal function that returns an efficient (for current engines) version
     // of the passed-in callback, to be repeatedly applied in other Underscore
     // functions.
+    //处理回调函数
     var optimizeCb = function(func, context, argCount) {
+        //上下文未指定时
         if (context === void 0) return func;
         switch (argCount == null ? 3 : argCount) {
             case 1: return function(value) {
@@ -121,6 +129,7 @@
     };
 
     // An internal function for creating a new object that inherits from another.
+    //复制对象
     var baseCreate = function(prototype) {
         if (!_.isObject(prototype)) return {};
         if (nativeCreate) return nativeCreate(prototype);
@@ -140,8 +149,11 @@
     // should be iterated as an array or as an object
     // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
     // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
+    //幂函数power，控制数组最大长度
     var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+    //获取长度属性
     var getLength = property('length');
+    //如果对象有length属性应该如何处理？？？
     var isArrayLike = function(collection) {
         var length = getLength(collection);
         return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
@@ -153,6 +165,7 @@
     // The cornerstone, an `each` implementation, aka `forEach`.
     // Handles raw objects in addition to array-likes. Treats all
     // sparse array-likes as if they were dense.
+    //对list中的每一个值都执行相同的操作并返回list本身
     _.each = _.forEach = function(obj, iteratee, context) {
         iteratee = optimizeCb(iteratee, context);
         var i, length;
@@ -170,6 +183,7 @@
     };
 
     // Return the results of applying the iteratee to each element.
+    //返回每一个list执行之后的结果集
     _.map = _.collect = function(obj, iteratee, context) {
         iteratee = cb(iteratee, context);
         var keys = !isArrayLike(obj) && _.keys(obj),
@@ -183,13 +197,16 @@
     };
 
     // Create a reducing function iterating left or right.
+    //创建通用的reduce函数，通过参数来区分调用
     var createReduce = function(dir) {
         // Optimized iterator function as using arguments.length
         // in the main function will deoptimize the, see #1991.
         var reducer = function(obj, iteratee, memo, initial) {
             var keys = !isArrayLike(obj) && _.keys(obj),
                 length = (keys || obj).length,
+                //区分是reduce还是rightReduce
                 index = dir > 0 ? 0 : length - 1;
+            //判断有没有传递初始值memo
             if (!initial) {
                 memo = obj[keys ? keys[index] : index];
                 index += dir;
