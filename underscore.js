@@ -71,7 +71,7 @@
     // functions.
     //处理回调函数
     var optimizeCb = function(func, context, argCount) {
-        //上下文未指定时
+        //上下文未指定时,void 0为undefined，是为了防止undefined被覆盖掉
         if (context === void 0) return func;
         switch (argCount == null ? 3 : argCount) {
             case 1: return function(value) {
@@ -219,6 +219,7 @@
         };
 
         return function(obj, iteratee, memo, context) {
+            //判断有没有传递初始值memo
             var initial = arguments.length >= 3;
             return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
         };
@@ -232,6 +233,7 @@
     _.reduceRight = _.foldr = createReduce(-1);
 
     // Return the first value which passes a truth test. Aliased as `detect`.
+    //区分数组或对象后用各自函数来区分调用
     _.find = _.detect = function(obj, predicate, context) {
         var key;
         if (isArrayLike(obj)) {
@@ -246,6 +248,7 @@
     // Aliased as `select`.
     _.filter = _.select = function(obj, predicate, context) {
         var results = [];
+        //把predicate方法变为三个参数的标准方法
         predicate = cb(predicate, context);
         _.each(obj, function(value, index, list) {
             if (predicate(value, index, list)) results.push(value);
@@ -254,12 +257,14 @@
     };
 
     // Return all the elements for which a truth test fails.
+    //循环调用negate方法来实现reject方法，返回所有判断为false的值
     _.reject = function(obj, predicate, context) {
         return _.filter(obj, _.negate(cb(predicate)), context);
     };
 
     // Determine whether all of the elements match a truth test.
     // Aliased as `all`.
+    //所有为true的情况下才返回true，未使用标志位
     _.every = _.all = function(obj, predicate, context) {
         predicate = cb(predicate, context);
         var keys = !isArrayLike(obj) && _.keys(obj),
@@ -273,6 +278,7 @@
 
     // Determine if at least one element in the object matches a truth test.
     // Aliased as `any`.
+    //与every相似，返回结果正好相反
     _.some = _.any = function(obj, predicate, context) {
         predicate = cb(predicate, context);
         var keys = !isArrayLike(obj) && _.keys(obj),
@@ -633,6 +639,7 @@
     };
 
     // Generator function to create the findIndex and findLastIndex functions
+    //构造一个利用predicate函数在array中查找的函数
     var createPredicateIndexFinder = function(dir) {
         return function(array, predicate, context) {
             predicate = cb(predicate, context);
@@ -983,6 +990,7 @@
     };
 
     // Retrieve the values of an object's properties.
+    //返回对象所有的value值
     _.values = function(obj) {
         var keys = _.keys(obj);
         var length = keys.length;

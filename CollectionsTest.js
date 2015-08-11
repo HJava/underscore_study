@@ -1,6 +1,6 @@
 var _ = require('underscore');
 
-var obj = {a: 1, b: 2};
+var obj = {a: 1, b: 2,length:1};
 var arr = [1, 2];
 //each
 console.log(_.each(obj, function(element, index, list) {
@@ -26,3 +26,9 @@ console.log(_.reduce(arr, function(memo, element) {
 
 console.log(_.difference(arr,1));
 console.log(arr);
+
+var property = function(key) {
+    return function(obj) {
+        return obj == null ? void 0 : obj[key];
+    };
+};
