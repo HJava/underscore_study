@@ -292,6 +292,7 @@
 
     // Determine if the array or object contains a given item (using `===`).
     // Aliased as `includes` and `include`.
+    //对象中是否包含item
     _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
         if (!isArrayLike(obj)) obj = _.values(obj);
         if (typeof fromIndex != 'number' || guard) fromIndex = 0;
@@ -658,6 +659,7 @@
 
     // Use a comparator function to figure out the smallest index at which
     // an object should be inserted so as to maintain order. Uses binary search.
+    //使用二分查找对已排序数组进行快速搜索
     _.sortedIndex = function(array, obj, iteratee, context) {
         iteratee = cb(iteratee, context, 1);
         var value = iteratee(obj);
@@ -670,15 +672,20 @@
     };
 
     // Generator function to create the indexOf and lastIndexOf functions
+    //dir步长,idx初始位置,sortedIndex二分搜索算法
     var createIndexFinder = function(dir, predicateFind, sortedIndex) {
         return function(array, item, idx) {
             var i = 0, length = getLength(array);
+            //idx为number类型时当成开始位置索引
             if (typeof idx == 'number') {
                 if (dir > 0) {
+                    //i为开始位置
                     i = idx >= 0 ? idx : Math.max(idx + length, i);
                 } else {
+                    //计算length，即搜索长度，初始位置为正时保证不超过数组长度，为负时控制最小长度，此时可能为负值，后面判断即可
                     length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
                 }
+                //idx为boolean类型时判断使用二分搜索算法
             } else if (sortedIndex && idx && length) {
                 idx = sortedIndex(array, item);
                 return array[idx] === item ? idx : -1;
