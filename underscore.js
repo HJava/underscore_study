@@ -300,6 +300,7 @@
     };
 
     // Invoke a method (with arguments) on every item in a collection.
+    //对obj中每个对象进行操作，如果method为key则访问该熟悉，为函数以value为上下文则调用该函数
     _.invoke = restArgs(function(obj, method, args) {
         var isFunc = _.isFunction(method);
         return _.map(obj, function(value) {
@@ -309,12 +310,14 @@
     });
 
     // Convenience version of a common use case of `map`: fetching a property.
+    //去对象集合中的同类属性值
     _.pluck = function(obj, key) {
         return _.map(obj, _.property(key));
     };
 
     // Convenience version of a common use case of `filter`: selecting only objects
     // containing specific `key:value` pairs.
+    //遍历整个list，返回匹配attrs参数所列出的所有 键 - 值 对的第一个值。
     _.where = function(obj, attrs) {
         return _.filter(obj, _.matcher(attrs));
     };
@@ -953,6 +956,7 @@
     // ----------------
 
     // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
+    //解决IE9以下key值不能用for-in来遍历的bug，缺少某些值
     var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
     var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
         'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
@@ -978,6 +982,7 @@
     // Delegates to **ECMAScript 5**'s native `Object.keys`
     _.keys = function(obj) {
         if (!_.isObject(obj)) return [];
+        //是否有原生的Object.keys方法
         if (nativeKeys) return nativeKeys(obj);
         var keys = [];
         for (var key in obj) if (_.has(obj, key)) keys.push(key);
@@ -992,6 +997,7 @@
         var keys = [];
         for (var key in obj) keys.push(key);
         // Ahem, IE < 9.
+        //对key中未枚举到的一些属性进行添加
         if (hasEnumBug) collectNonEnumProps(obj, keys);
         return keys;
     };
@@ -1353,6 +1359,7 @@
 
     // Shortcut function for checking if an object has a given property directly
     // on itself (in other words, not on a prototype).
+    //使用hasOwnProperty判断对象obj是否有key值
     _.has = function(obj, key) {
         return obj != null && hasOwnProperty.call(obj, key);
     };
