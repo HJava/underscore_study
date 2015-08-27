@@ -94,6 +94,7 @@
     // A mostly-internal function to generate callbacks that can be applied
     // to each element in a collection, returning the desired result — either
     // identity, an arbitrary callback, a property matcher, or a property accessor.
+    //根据value的类型来构造回调函数
     var cb = function(value, context, argCount) {
         if (value == null) return _.identity;
         if (_.isFunction(value)) return optimizeCb(value, context, argCount);
@@ -329,6 +330,7 @@
     };
 
     // Return the maximum element (or element-based computation).
+    //获取最大值，通过区分iteratee来进行不同的操作比较
     _.max = function(obj, iteratee, context) {
         var result = -Infinity, lastComputed = -Infinity,
             value, computed;
@@ -354,6 +356,7 @@
     };
 
     // Return the minimum element (or element-based computation).
+    //同max
     _.min = function(obj, iteratee, context) {
         var result = Infinity, lastComputed = Infinity,
             value, computed;
@@ -380,6 +383,7 @@
 
     // Shuffle a collection.
     _.shuffle = function(obj) {
+        //无穷大来替代传递集合长度
         return _.sample(obj, Infinity);
     };
 
@@ -387,6 +391,7 @@
     // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
     // If **n** is not specified, returns a single random element.
     // The internal `guard` argument allows it to work with `map`.
+    //返回集合中随机的n个数，不传递n则返回一个,内部的变量guard让结果集能够使用map函数？传递貌似只返回一个
     _.sample = function(obj, n, guard) {
         if (n == null || guard) {
             if (!isArrayLike(obj)) obj = _.values(obj);
@@ -1148,6 +1153,7 @@
     };
 
     // Create a (shallow-cloned) duplicate of an object.
+    //创建一个新对象，但是不算深拷贝
     _.clone = function(obj) {
         if (!_.isObject(obj)) return obj;
         return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
